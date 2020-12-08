@@ -8,7 +8,7 @@ namespace WindowsFormsApp1
 {
     static class Program
     {
-        public static Form1 MainMenu;
+        public static MainMenu MainMenu;
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -17,7 +17,7 @@ namespace WindowsFormsApp1
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            MainMenu = new Form1();
+            MainMenu = new MainMenu();
             Application.Run(MainMenu);
         }
     }

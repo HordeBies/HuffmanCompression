@@ -14,7 +14,7 @@ namespace WindowsFormsApp1
         private bool isLeaf;
         private int freq;
         private char ch;
-        public HuffmanNode(int freq, char ch)
+        public HuffmanNode(int freq, char ch) // for leaf node
         {
             this.parentNode = null;
             this.leftChild = null;
@@ -23,7 +23,7 @@ namespace WindowsFormsApp1
             this.freq = freq;
             this.ch = ch;
         }
-        public HuffmanNode(HuffmanNode leftChild, HuffmanNode rightChild)
+        public HuffmanNode(HuffmanNode leftChild, HuffmanNode rightChild) //for parent node
         {
             this.parentNode = null;
             this.leftChild = leftChild;

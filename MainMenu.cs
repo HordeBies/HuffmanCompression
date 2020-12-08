@@ -11,17 +11,17 @@ using System.Windows.Forms;
 namespace WindowsFormsApp1
 {
 
-    public partial class Form1 : Form
+    public partial class MainMenu : Form
     {
         public static HuffmanNode topNode;
-        private static Form2 visualization = new Form2();
-        private static Form3 convertedData = new Form3();
+        private static StaticTree visualization = new StaticTree();
+        private static StaticData convertedData = new StaticData();
         private static Dictionary<char,string> map = new Dictionary<char, string>();
         public static Microsoft.Msagl.Drawing.Graph graph;
         public static HuffmanListSorter sorter = new HuffmanListSorter();
         public static DataTable Dtable = new DataTable("Huffman Table");
         public static string encodedText;
-        public Form1()
+        public MainMenu()
         {
             InitializeComponent();
             Dtable.Columns.Add(new DataColumn("Char"));
@@ -142,6 +142,11 @@ namespace WindowsFormsApp1
             convertedData.updateTextBox(encodedText);
             dataGridView1.Sort(dataGridView1.Columns[3], ListSortDirection.Ascending);
             visualization.UpdateGraph(graph);
+        }
+
+        private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
