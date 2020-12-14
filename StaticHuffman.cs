@@ -10,20 +10,41 @@ using System.Windows.Forms;
 
 namespace WindowsFormsApp1
 {
-
-    public partial class MainMenu : Form
+    public partial class StaticHuffman : Form
     {
         public static HuffmanNode topNode;
-        private static StaticTree visualization = new StaticTree();
-        private static StaticData convertedData = new StaticData();
-        private static Dictionary<char,string> map = new Dictionary<char, string>();
+        private static Dictionary<char, string> map = new Dictionary<char, string>();
         public static Microsoft.Msagl.Drawing.Graph graph;
         public static HuffmanListSorter sorter = new HuffmanListSorter();
         public static DataTable Dtable = new DataTable("Huffman Table");
         public static string encodedText;
-        public MainMenu()
+        public static string decodedText;
+        private static Microsoft.Msagl.GraphViewerGdi.GViewer viewer = new Microsoft.Msagl.GraphViewerGdi.GViewer();
+        public StaticHuffman()
         {
+
             InitializeComponent();
+            this.StartPosition = FormStartPosition.Manual;
+            this.Location = new Point(0, 0);
+            //this.WindowState = FormWindowState.Maximized;
+
+            viewer.Dock = System.Windows.Forms.DockStyle.None;
+            viewer.Location = new Point(972, 12);
+            viewer.Size = new Size(948, 503);
+            viewer.EdgeInsertButtonVisible = false;
+            viewer.NavigationVisible = false;
+            viewer.LayoutAlgorithmSettingsButtonVisible = false;
+            viewer.SaveButtonVisible = false;
+            viewer.SaveGraphButtonVisible = false;
+            viewer.UndoRedoButtonsVisible = false;
+            viewer.ToolBarIsVisible = true;
+            viewer.PanButtonPressed = true;
+            viewer.LayoutEditingEnabled = false;
+            this.SuspendLayout();
+            this.Controls.Add(viewer);
+            viewer.KeyDown += new System.Windows.Forms.KeyEventHandler(this.staticHuffman_KeyPress);
+            this.ResumeLayout();
+
             Dtable.Columns.Add(new DataColumn("Char"));
             Dtable.Columns.Add(new DataColumn("Freq"));
             Dtable.Columns.Add(new DataColumn("Code"));
@@ -49,21 +70,21 @@ namespace WindowsFormsApp1
         private string getNodeName(HuffmanNode node)
         {
             string str;
-            if (node.IsLeaf) { 
-                str = " '"+node.ToString() + "'(" + node.Frequency.ToString() + ")\n" + node.getBit();
+            if (node.IsLeaf) {
+                str = " '" + node.ToString() + "'(" + node.Frequency.ToString() + ")\n" + node.getBit();
             }
             else
                 str = node.ToString() + "\n" + node.getBit();
 
             return str;
         }
-        private void createGraph(HuffmanNode node)
+        private void createStaticGraph(HuffmanNode node)
         {
             graph.AddNode(getNodeName(node));
-            if (node.IsLeaf) { 
+            if (node.IsLeaf) {
                 graph.FindNode(getNodeName(node)).Attr.Color = new Microsoft.Msagl.Drawing.Color(255, 0, 0);
                 DataRow row = Dtable.NewRow();
-                row[0] = "'"+node.Char.ToString()+"'";
+                row[0] = "'" + node.Char.ToString() + "'";
                 row[1] = node.Frequency;
                 row[2] = node.getBit();
                 row[3] = node.getBit().Length.ToString();
@@ -73,12 +94,12 @@ namespace WindowsFormsApp1
             if (node.RightChild != null)
             {
                 graph.AddEdge(getNodeName(node), getNodeName(node.RightChild));
-                createGraph(node.RightChild);
+                createStaticGraph(node.RightChild);
             }
             if (node.LeftChild != null)
             {
                 graph.AddEdge(getNodeName(node), getNodeName(node.LeftChild));
-                createGraph(node.LeftChild);
+                createStaticGraph(node.LeftChild);
             }
 
         }
@@ -93,28 +114,40 @@ namespace WindowsFormsApp1
             return encoded;
         }
 
-        private void OpenForm(object sender, EventArgs e)
+        private string Decode()
         {
-           
-            visualization.StartPosition = FormStartPosition.Manual;
-            visualization.SetDesktopLocation(this.DesktopLocation.X+this.Width-14, this.DesktopLocation.Y);
-            visualization.Show();
-            convertedData.StartPosition = FormStartPosition.Manual;
-            convertedData.SetDesktopLocation(visualization.DesktopLocation.X + visualization.Width - 14, visualization.DesktopLocation.Y);
-            convertedData.Height = visualization.Height;
-            convertedData.Width = visualization.Width;
-            convertedData.Show();
-        }
+            if (topNode == null || encodedText.Length <1)
+                return "";
+            HuffmanNode currKey;
 
-        private void CreateHuffmanTree(object sender, EventArgs e)
+            decodedText = "";
+            currKey = topNode;
+            foreach (char c in encodedText)
+            {
+                if (c == '1')
+                    currKey = currKey.RightChild;
+                else if (c == '0')
+                    currKey = currKey.LeftChild;
+                if (currKey.IsLeaf)
+                {
+                    decodedText += currKey.Char;
+                    currKey = topNode;
+                }
+            }
+            return decodedText;
+        }
+        private void CreateStaticHuffmanTree(object sender, EventArgs e)
         {
             graph = new Microsoft.Msagl.Drawing.Graph("Huffman Tree");
             Dtable.Clear();
             map = new Dictionary<char, string>();
             String text = textBox3.Text;
+            textBox2.Text = "";
             if (text.Length < 1)
             {
-                visualization.UpdateGraph(graph);
+                UpdateGraph(graph);
+                textBox1.Text = "";
+                MessageBox.Show("Can't encode empty input ", "Encoding Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             var count2 = text.ToLower().Select(x => x).GroupBy(c => c).Select(chunk => new { Letter = chunk.Key, Count = chunk.Count() }).OrderByDescending(item => item.Count).ThenBy(item => item.Letter); // Language Integrated Query
@@ -135,17 +168,54 @@ namespace WindowsFormsApp1
                 list.Sort(sorter);
             }
             topNode = list[0];
-            createGraph(topNode);
+            createStaticGraph(topNode);
             encodedText = Encode();
             double compressionRatio = Math.Floor((double)encodedText.Length/ (double)(topNode.Frequency * 8)*100*100)/100;
             this.label1.Text = "Compression Ratio: "+compressionRatio.ToString()+"%";
-            convertedData.updateTextBox(encodedText);
+            updateTextBox(encodedText);
             dataGridView1.Sort(dataGridView1.Columns[3], ListSortDirection.Ascending);
-            visualization.UpdateGraph(graph);
+            UpdateGraph(graph);
         }
 
         private void textBox3_TextChanged(object sender, EventArgs e)
         {
+            int currPos = textBox3.SelectionStart;
+            textBox3.Text = textBox3.Text.ToLower();
+            textBox3.SelectionStart = currPos;
+        }
+
+        public void updateTextBox(string str)
+        {
+            this.textBox1.Text = str;
+        }
+
+        public void UpdateGraph(Microsoft.Msagl.Drawing.Graph graph)
+        {
+
+            viewer.Graph = graph;
+            viewer.Update();
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+        private void staticHuffman_KeyPress(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                this.Close();
+            }
+        }
+
+        private void DecodeEncodedData(object sender, EventArgs e)
+        {
+            if (topNode == null || encodedText.Length < 1)
+            {
+                MessageBox.Show("Can't decode empty input or not encoded text", "Decoding Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            textBox2.Text = Decode();
 
         }
     }
