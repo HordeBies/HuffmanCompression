@@ -55,12 +55,12 @@ namespace WindowsFormsApp1
             this.isLeaf = false;
             this.freq = this.leftChild.Frequency + this.rightChild.Frequency;
             this.depth = depth;
-            this.leftChild.depth = this.depth+1;
-            this.rightChild.depth = this.depth+1;
+            this.leftChild.depth = this.depth - 2;
+            this.rightChild.depth = this.depth - 1;
         }
         public HuffmanNode()
         {
-            this.depth = 0;
+            this.depth = 256;
             this.leftChild = null;
             this.rightChild = null;
             this.isLeaf = false;
@@ -72,6 +72,10 @@ namespace WindowsFormsApp1
             get
             {
                 return this.depth;
+            }
+            set
+            {
+                this.depth = value;
             }
         }
         public int Frequency
@@ -130,6 +134,21 @@ namespace WindowsFormsApp1
             //Console.WriteLine("TriedToSwap");
             HuffmanNode leftParent = node1.parentNode;
             HuffmanNode rightParent = node2.parentNode;
+            if(leftParent == rightParent)
+            {
+                if(leftParent.leftChild == node1)
+                {
+                    leftParent.leftChild = node2;
+                    leftParent.rightChild = node1;
+                }
+                else
+                {
+                    leftParent.leftChild = node1;
+                    leftParent.rightChild = node2;
+                }
+                return;
+            }
+
             int temp = node1.depth;
             node1.depth = node2.depth;
             node2.depth = temp;

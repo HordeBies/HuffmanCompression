@@ -40,6 +40,7 @@ namespace WindowsFormsApp1
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -52,7 +53,7 @@ namespace WindowsFormsApp1
             this.button1.TabIndex = 2;
             this.button1.Text = "Update Tree and Encode with Dynamic Huffman";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.CreateDynamicHuffmanTree);
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             this.button1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dynamicHuffman_KeyPress);
             // 
             // textBox3
@@ -103,7 +104,6 @@ namespace WindowsFormsApp1
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBox1.Size = new System.Drawing.Size(850, 493);
             this.textBox1.TabIndex = 11;
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             this.textBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dynamicHuffman_KeyPress);
             // 
             // textBox2
@@ -139,12 +139,27 @@ namespace WindowsFormsApp1
             this.button3.TabIndex = 14;
             this.button3.Text = "Clear Tree";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.Location = new System.Drawing.Point(318, 521);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(144, 17);
+            this.checkBox1.TabIndex = 15;
+            this.checkBox1.Text = "Clear input after updating";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dynamicHuffman_KeyPress);
             // 
             // DynamicHuffman
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1920, 1080);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.textBox2);
@@ -176,5 +191,6 @@ namespace WindowsFormsApp1
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Button button2;
         private Button button3;
+        private CheckBox checkBox1;
     }
 }
