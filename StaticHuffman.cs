@@ -67,6 +67,21 @@ namespace WindowsFormsApp1
 
         }
 
+
+        public void cleanInit()
+        {
+            graph = new Microsoft.Msagl.Drawing.Graph("Huffman Tree");
+            viewer.Graph = graph;
+            viewer.Update();
+            Dtable.Clear();
+            dataGridView1.Update();
+            textBox1.Text = "";
+            textBox2.Text = "";
+            textBox3.Text = "";
+            label1.Text = "Compression Ratio:";
+
+        }
+
         private string getNodeName(HuffmanNode node)
         {
             string str;
@@ -147,6 +162,8 @@ namespace WindowsFormsApp1
             {
                 UpdateGraph(graph);
                 textBox1.Text = "";
+                encodedText = "";
+                label1.Text = "Compression Ratio:";
                 MessageBox.Show("Can't encode empty input ", "Encoding Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
@@ -204,7 +221,7 @@ namespace WindowsFormsApp1
         {
             if (e.KeyCode == Keys.Escape)
             {
-                this.Close();
+                this.Hide();
             }
         }
 

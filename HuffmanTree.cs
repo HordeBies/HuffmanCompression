@@ -8,12 +8,13 @@ namespace WindowsFormsApp1
 {
     public class HuffmanNode
     {
-        private HuffmanNode parentNode;
+        public HuffmanNode parentNode;
         private HuffmanNode leftChild;
         private HuffmanNode rightChild;
         private bool isLeaf;
         private int freq;
         private char ch;
+        private int depth;
         public HuffmanNode(int freq, char ch) // for leaf node
         {
             this.parentNode = null;
@@ -22,6 +23,11 @@ namespace WindowsFormsApp1
             this.isLeaf = true;
             this.freq = freq;
             this.ch = ch;
+        }
+        public HuffmanNode(int freq, char ch, int depth) :  this(freq, ch)
+        {
+            this.depth = depth;
+
         }
         public HuffmanNode(HuffmanNode leftChild, HuffmanNode rightChild) //for parent node
         {
@@ -34,11 +40,49 @@ namespace WindowsFormsApp1
             this.freq = this.leftChild.Frequency + this.rightChild.Frequency;
 
         }
+        public HuffmanNode(HuffmanNode leftChild, HuffmanNode rightChild, int depth)
+        {
+            if (leftChild.parentNode != null) { 
+                this.parentNode = leftChild.parentNode;
+                this.parentNode.leftChild = this;
+            }
+            else
+                this.parentNode = null;
+            this.leftChild = leftChild;
+            this.leftChild.parentNode = this;
+            this.rightChild = rightChild;
+            this.rightChild.parentNode = this;
+            this.isLeaf = false;
+            this.freq = this.leftChild.Frequency + this.rightChild.Frequency;
+            this.depth = depth;
+            this.leftChild.depth = this.depth+1;
+            this.rightChild.depth = this.depth+1;
+        }
+        public HuffmanNode()
+        {
+            this.depth = 0;
+            this.leftChild = null;
+            this.rightChild = null;
+            this.isLeaf = false;
+            this.freq = 0;
+        }
+        
+        public int Depth
+        {
+            get
+            {
+                return this.depth;
+            }
+        }
         public int Frequency
         {
             get
             {
                 return this.freq;
+            }
+            set
+            {
+                this.freq = value;
             }
         }
         public char Char
@@ -68,6 +112,50 @@ namespace WindowsFormsApp1
             {
                 return this.rightChild;
             }
+        }
+        public HuffmanNode Parent
+        {
+            get
+            {
+                return this.parentNode;
+            }
+        }
+        private void unAssignParent()
+        {
+            this.parentNode = null;
+        }
+
+        public static void swap(HuffmanNode node1,HuffmanNode node2)
+        {
+            //Console.WriteLine("TriedToSwap");
+            HuffmanNode leftParent = node1.parentNode;
+            HuffmanNode rightParent = node2.parentNode;
+            int temp = node1.depth;
+            node1.depth = node2.depth;
+            node2.depth = temp;
+            if(leftParent == null)
+            {
+                node2.unAssignParent();
+            }
+            else if (leftParent.leftChild == node1)
+                leftParent.leftChild = node2;
+            else if(leftParent.rightChild == node1)
+                leftParent.rightChild = node2;
+
+            if(leftParent != null)
+                node2.parentNode = leftParent;
+
+            if(rightParent == null)
+            {
+                node1.unAssignParent();
+            }
+            else if (rightParent.leftChild == node2)
+                rightParent.leftChild = node1;
+            else if(rightParent.rightChild == node2)
+                rightParent.rightChild = node1;
+
+            node1.parentNode = rightParent;
+
         }
         public string getBit()
         {
