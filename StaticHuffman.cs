@@ -187,7 +187,7 @@ namespace WindowsFormsApp1
             topNode = list[0];
             createStaticGraph(topNode);
             encodedText = Encode();
-            double compressionRatio = Math.Floor((double)encodedText.Length/ (double)(topNode.Frequency * 8)*100*100)/100;
+            double compressionRatio = 100.0- Math.Floor((double)encodedText.Length/ (double)(topNode.Frequency * 8)*100*100)/100;
             this.label1.Text = "Compression Ratio: "+compressionRatio.ToString()+"%";
             updateTextBox(encodedText);
             dataGridView1.Sort(dataGridView1.Columns[3], ListSortDirection.Ascending);

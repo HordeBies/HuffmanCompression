@@ -133,7 +133,6 @@ namespace WindowsFormsApp1
             graph.AddNode(getNodeName(node));
             if (node.IsLeaf)
             {
-                Console.WriteLine("leaf node found");
                 graph.FindNode(getNodeName(node)).Attr.Color = new Microsoft.Msagl.Drawing.Color(255, 0, 0);
                     DataRow row = Dtable.NewRow();
                     row[0] = "'" + node.Char.ToString() + "'";
@@ -153,9 +152,6 @@ namespace WindowsFormsApp1
                 graph.AddEdge(getNodeName(node), getNodeName(node.LeftChild));
                 createDynamicGraph(node.LeftChild);
             }
-
-            dataGridView1.Sort(dataGridView1.Columns[3],ListSortDirection.Ascending);
-            dataGridView1.Update();
         }
 
 
@@ -167,6 +163,8 @@ namespace WindowsFormsApp1
             {
                 if (!firstReadOfChar.Contains(c))
                 {
+                    //encodedText += nodeZero.getBit() + c;
+                    encodedText += nodeZero.getBit();
                     firstReadOfChar.Add(c);
                     HuffmanNode leafNode = new HuffmanNode(1, c, 0);
                     dynamicMap[c] = leafNode;
@@ -179,13 +177,21 @@ namespace WindowsFormsApp1
                 }
                 else
                 {
+                    encodedText += dynamicMap[c].getBit();
                     dynamicMap[c].Frequency++;
                     updateGraph();
                 }
             }
+
+            textBox1.Text = encodedText;
+            double compressionRatio = 100.0-Math.Floor((double)encodedText.Length / (double)(nodeList[256].Frequency * 8) * 100 * 100) / 100;
+            this.label1.Text = "Compression Ratio: " + compressionRatio.ToString() + "%";
             Dtable.Rows.Clear();
+
             createDynamicGraph(nodeList[256]);
             viewer.Graph = graph;
+            dataGridView1.Sort(dataGridView1.Columns[3], ListSortDirection.Ascending);
+            dataGridView1.Update();
             viewer.Update();
         }
 
@@ -237,8 +243,16 @@ namespace WindowsFormsApp1
                 {
                     if (nodeList[j].Frequency != selectedNode.Frequency)
                         continue;
-                    if (!nodeList[j].IsLeaf )
-                        Swap(selectedNode, nodeList[j], i , j);
+                    if (!nodeList[j].IsLeaf)
+                    {
+                        int t = j;
+                        while(t < i)
+                        {
+                            Swap(nodeList[t], nodeList[t+1], t, t+1);
+                            t++;
+                        }
+                    }
+                        
                 }
                 int k = i;
                 while (k < 256 && nodeList[k].Frequency > nodeList[k + 1].Frequency)
@@ -264,7 +278,21 @@ namespace WindowsFormsApp1
 
         private void button3_Click(object sender, EventArgs e)
         {
-            cleanInit();
+            graph = new Microsoft.Msagl.Drawing.Graph("Huffman Tree");
+            viewer.Graph = graph;
+            viewer.Update();
+            Dtable.Clear();
+            dataGridView1.Update();
+            textBox1.Text = "";
+            textBox2.Text = "";
+            mainInput = "";
+            encodedText = "";
+            decodedText = "";
+            label1.Text = "Compression Ratio:";
+            nodeZero = new HuffmanNode();
+            nodeList = new SortedDictionary<int, HuffmanNode>();
+            firstReadOfChar = new List<char>();
+            dynamicMap = new Dictionary<char, HuffmanNode>();
         }
     }
 }
