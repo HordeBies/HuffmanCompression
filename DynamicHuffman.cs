@@ -4,9 +4,6 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace WindowsFormsApp1
@@ -21,7 +18,7 @@ namespace WindowsFormsApp1
         public static string decodedText = "";
         private static Microsoft.Msagl.GraphViewerGdi.GViewer viewer = new Microsoft.Msagl.GraphViewerGdi.GViewer();
         HuffmanNode nodeZero = new HuffmanNode();
-        SortedDictionary<int, HuffmanNode> nodeList = new SortedDictionary<int, HuffmanNode>();
+        SortedDictionary<int, HuffmanNode> EncodeNodeList = new SortedDictionary<int, HuffmanNode>();
         List<char> firstReadOfChar = new List<char>();
         Dictionary<char, HuffmanNode> dynamicMap = new Dictionary<char, HuffmanNode>();
         public DynamicHuffman()
@@ -66,8 +63,8 @@ namespace WindowsFormsApp1
                 col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             }
 
-            
-            nodeList.Add(nodeZero.Depth, nodeZero);
+
+            EncodeNodeList.Add(nodeZero.Depth, nodeZero);
         }
 
         public void cleanInit()
@@ -85,14 +82,61 @@ namespace WindowsFormsApp1
             decodedText = "";
             label1.Text = "Compression Ratio:";
             nodeZero = new HuffmanNode();
-            nodeList = new SortedDictionary<int, HuffmanNode>();
+            EncodeNodeList = new SortedDictionary<int, HuffmanNode>();
+            EncodeNodeList.Add(nodeZero.Depth, nodeZero);
             firstReadOfChar = new List<char>();
             dynamicMap = new Dictionary<char, HuffmanNode>();
         }
 
-        private void DecodeEncodedData(object sender, EventArgs e)
+        HuffmanNode DecodingRootNode;
+        private void DecodeEncodedData()
         {
+            if(firstReadOfChar.Count < 1)
+            {
+                MessageBox.Show("Can't decode empty input or not encoded data", "Decoding Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            decodedText = "";
+            int cfri = 0; //charfirstreadindex
+            SortedDictionary<int, HuffmanNode> DecodeNodeList = new SortedDictionary<int, HuffmanNode>();
+            HuffmanNode decodingNodeZero = new HuffmanNode();
+            HuffmanNode leafNode = new HuffmanNode(1, firstReadOfChar[cfri], 0);
+            DecodingRootNode = new HuffmanNode(decodingNodeZero, leafNode, decodingNodeZero.Depth);
+            DecodeNodeList.Add(decodingNodeZero.Depth, decodingNodeZero);
+            DecodeNodeList.Add(leafNode.Depth, leafNode);
+            DecodeNodeList.Add(DecodingRootNode.Depth, DecodingRootNode);
+            decodedText += firstReadOfChar[cfri];
+            HuffmanNode traverse = DecodingRootNode;
+            cfri++;
+            foreach (char c in encodedText)
+            {
+                if(c == '1')
+                    traverse = traverse.RightChild;
+                else if(c == '0')
+                    traverse = traverse.LeftChild;
+                
+                if(traverse == decodingNodeZero)
+                {
+                    decodedText += firstReadOfChar[cfri];
+                    leafNode = new HuffmanNode(1, firstReadOfChar[cfri], 0);
+                    HuffmanNode newNode = new HuffmanNode(decodingNodeZero, leafNode, decodingNodeZero.Depth);
+                    DecodeNodeList.Add(leafNode.Depth, leafNode);
+                    DecodeNodeList[newNode.Depth] = newNode;
+                    DecodeNodeList.Add(decodingNodeZero.Depth, decodingNodeZero);
+                    cfri++;
+                    traverse = DecodingRootNode;
+                    updateGraph(DecodeNodeList);
+                }
+                if (traverse.IsLeaf)
+                {
+                    decodedText += traverse.Char;
+                    traverse.Frequency++;
+                    traverse = DecodingRootNode;
+                    updateGraph(DecodeNodeList);
+                }
+            }
 
+            textBox2.Text = decodedText;
         }
 
         private void textBox3_TextChanged(object sender, EventArgs e)
@@ -100,6 +144,22 @@ namespace WindowsFormsApp1
             int currPos = textBox3.SelectionStart;
             textBox3.Text = textBox3.Text.ToLower();
             textBox3.SelectionStart = currPos;
+            if (checkBox2.Checked)
+            {
+                if (textBox3.Text.StartsWith(mainInput))
+                    CreateDynamicHuffmanTree(textBox3.Text.Substring(mainInput.Length));
+                else if (textBox3.Text == "")
+                {
+                    cleanInit();
+                }
+                else
+                {
+                    MessageBox.Show("Program currently doesnt allow correction.\nPlease use clear tree", "Real Time Encoding Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    textBox3.Text = mainInput;
+                    textBox3.SelectionStart = mainInput.Length;
+                }
+                mainInput = textBox3.Text;
+            }
         }
 
         private void dynamicHuffman_KeyPress(object sender, KeyEventArgs e)
@@ -107,6 +167,7 @@ namespace WindowsFormsApp1
             if (e.KeyCode == Keys.Escape)
             {
                 this.Hide();
+                Program.mainMEnu.BringToFront();
             }
         }
 
@@ -116,16 +177,17 @@ namespace WindowsFormsApp1
             string str;
             if (node.IsLeaf)
             {
-                str = " '" + node.ToString() + "'(" + node.Depth.ToString() + ","+node.Frequency+ ")\n" + node.getBit();
-            }else if(node.LeftChild == null && node.RightChild == null)
+                str = " '" + node.ToString() + "'(" + node.Depth.ToString() + "," + node.Frequency + ")\n" + node.getBit();
+            }
+            else if (node.LeftChild == null && node.RightChild == null)
             {
-                return "ZeroNode("+node.Depth+")";
+                return "ZeroNode(" + node.Depth + ")";
             }
             else
-                str = node.ToString()+"("+node.Depth+")" + "\n" + node.getBit();
+                str = node.ToString() + "(" + node.Depth + ")" + "\n" + node.getBit();
 
             return str;
-        }   
+        }
         private void createDynamicGraph(HuffmanNode node)
         {
             map = new Dictionary<char, string>();
@@ -134,14 +196,14 @@ namespace WindowsFormsApp1
             if (node.IsLeaf)
             {
                 graph.FindNode(getNodeName(node)).Attr.Color = new Microsoft.Msagl.Drawing.Color(255, 0, 0);
-                    DataRow row = Dtable.NewRow();
-                    row[0] = "'" + node.Char.ToString() + "'";
-                    row[1] = node.Frequency;
-                    row[2] = node.getBit();
-                    row[3] = node.getBit().Length.ToString();
-                    Dtable.Rows.Add(row);
+                DataRow row = Dtable.NewRow();
+                row[0] = "'" + node.Char.ToString() + "'";
+                row[1] = node.Frequency;
+                row[2] = node.getBit();
+                row[3] = node.getBit().Length.ToString();
+                Dtable.Rows.Add(row);
                 map.Add(node.Char, node.getBit());
-                }
+            }
             if (node.RightChild != null)
             {
                 graph.AddEdge(getNodeName(node), getNodeName(node.RightChild));
@@ -168,31 +230,34 @@ namespace WindowsFormsApp1
                     firstReadOfChar.Add(c);
                     HuffmanNode leafNode = new HuffmanNode(1, c, 0);
                     dynamicMap[c] = leafNode;
-                    HuffmanNode newNode = new HuffmanNode(nodeZero, leafNode ,nodeZero.Depth);
-                    nodeList.Add(leafNode.Depth, leafNode);
-                    nodeList[newNode.Depth] = newNode;
-                    nodeList.Add(nodeZero.Depth, nodeZero);
+                    HuffmanNode newNode = new HuffmanNode(nodeZero, leafNode, nodeZero.Depth);
+                    EncodeNodeList.Add(leafNode.Depth, leafNode);
+                    EncodeNodeList[newNode.Depth] = newNode;
+                    EncodeNodeList.Add(nodeZero.Depth, nodeZero);
 
-                    updateGraph();
+                    updateGraph(EncodeNodeList);
                 }
                 else
                 {
                     encodedText += dynamicMap[c].getBit();
                     dynamicMap[c].Frequency++;
-                    updateGraph();
+                    updateGraph(EncodeNodeList);
                 }
             }
 
             textBox1.Text = encodedText;
-            double compressionRatio = 100.0-Math.Floor((double)encodedText.Length / (double)(nodeList[256].Frequency * 8) * 100 * 100) / 100;
+            double compressionRatio = 100.0 - Math.Floor((double)encodedText.Length / (double)(EncodeNodeList[256].Frequency * 8) * 100 * 100) / 100;
             this.label1.Text = "Compression Ratio: " + compressionRatio.ToString() + "%";
-            Dtable.Rows.Clear();
+            
 
-            createDynamicGraph(nodeList[256]);
-            viewer.Graph = graph;
-            dataGridView1.Sort(dataGridView1.Columns[3], ListSortDirection.Ascending);
-            dataGridView1.Update();
-            viewer.Update();
+            if (!checkBox3.Checked) {
+                Dtable.Rows.Clear();
+                createDynamicGraph(EncodeNodeList[256]);
+                viewer.Graph = graph;
+                dataGridView1.Sort(dataGridView1.Columns[3], ListSortDirection.Ascending);
+                dataGridView1.Update();
+                viewer.Update();
+            }
         }
 
         private void updateFreqs(HuffmanNode root)
@@ -212,12 +277,12 @@ namespace WindowsFormsApp1
             int depthIndex = 256;
             queue.Enqueue(root);
             HuffmanNode currNode;
-            while (queue.Count >0)
+            while (queue.Count > 0)
             {
                 currNode = queue.Dequeue();
                 currNode.Depth = depthIndex;
                 depthIndex--;
-                if(currNode.LeftChild != null && currNode.RightChild != null)
+                if (currNode.LeftChild != null && currNode.RightChild != null)
                 {
                     queue.Enqueue(currNode.RightChild);
                     queue.Enqueue(currNode.LeftChild);
@@ -225,7 +290,7 @@ namespace WindowsFormsApp1
             }
             updateFreqs(root);
         }
-        private void Swap(HuffmanNode node1, HuffmanNode node2, int i , int j) //parent(will traverse), givenNode
+        private void Swap(HuffmanNode node1, HuffmanNode node2, int i, int j , SortedDictionary<int, HuffmanNode> nodeList) //parent(will traverse), givenNode
         {
             //Console.WriteLine("Swapped\n"+getNodeName(node1)+"\nwith\n"+getNodeName(node2)+"\n");
             HuffmanNode.swap(node1, node2);
@@ -233,31 +298,31 @@ namespace WindowsFormsApp1
             nodeList[i] = nodeList[j];
             nodeList[j] = temp;
         }
-        private void updateGraph()
+        private void updateGraph(SortedDictionary<int,HuffmanNode> nodeList)
         {
-            for (int i = 256; i>256-nodeList.Count();i--)
+            for (int i = 256; i > 256 - nodeList.Count(); i--)
             {
                 HuffmanNode selectedNode = nodeList[i];
 
-                for (int j = i - 1; j > 256 - nodeList.Count() && selectedNode.IsLeaf ; j--)
+                for (int j = i - 1; j > 256 - nodeList.Count() && selectedNode.IsLeaf; j--)
                 {
                     if (nodeList[j].Frequency != selectedNode.Frequency)
                         continue;
                     if (!nodeList[j].IsLeaf)
                     {
                         int t = j;
-                        while(t < i)
+                        while (t < i)
                         {
-                            Swap(nodeList[t], nodeList[t+1], t, t+1);
+                            Swap(nodeList[t], nodeList[t + 1], t, t + 1 , nodeList);
                             t++;
                         }
                     }
-                        
+
                 }
                 int k = i;
                 while (k < 256 && nodeList[k].Frequency > nodeList[k + 1].Frequency)
                 {
-                    Swap(nodeList[k], nodeList[k + 1], k, k + 1);
+                    Swap(nodeList[k], nodeList[k + 1], k, k + 1 , nodeList);
                     k++;
                 }
             }
@@ -265,6 +330,11 @@ namespace WindowsFormsApp1
         }
         private void button1_Click(object sender, EventArgs e)
         {
+            if (checkBox2.Checked)
+            {
+                MessageBox.Show("Cannot manually update tree in real time encoding", "Manual Encoding Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             CreateDynamicHuffmanTree(textBox3.Text);
             mainInput += textBox3.Text;
             if (checkBox1.Checked)
@@ -273,26 +343,55 @@ namespace WindowsFormsApp1
 
         private void checkBox1_Click(object sender, EventArgs e)
         {
-
+            if (checkBox2.Checked && checkBox1.Checked)
+            {
+                checkBox2.Checked = false;
+                checkBox2.CheckState = CheckState.Unchecked;
+                MessageBox.Show("Create Tree in Real Time unchecked", "Input Updating Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            //cleanInit();
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            graph = new Microsoft.Msagl.Drawing.Graph("Huffman Tree");
-            viewer.Graph = graph;
-            viewer.Update();
-            Dtable.Clear();
-            dataGridView1.Update();
-            textBox1.Text = "";
-            textBox2.Text = "";
-            mainInput = "";
-            encodedText = "";
-            decodedText = "";
-            label1.Text = "Compression Ratio:";
-            nodeZero = new HuffmanNode();
-            nodeList = new SortedDictionary<int, HuffmanNode>();
-            firstReadOfChar = new List<char>();
-            dynamicMap = new Dictionary<char, HuffmanNode>();
+            cleanInit();
+        }
+
+        private void checkBox2_Click(object sender, EventArgs e)
+        {
+            if (checkBox1.Checked && checkBox2.Checked)
+            {
+                checkBox1.Checked = false;
+                checkBox1.CheckState = CheckState.Unchecked;
+                MessageBox.Show("Clear input after updating box unchecked", "Real Time Encoding Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            cleanInit();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            DecodeEncodedData();
+        }
+
+        private void checkBox3_Click(object sender, EventArgs e)
+        {
+            if (checkBox3.Checked)
+            {
+                Dtable.Rows.Clear();
+                graph = new Microsoft.Msagl.Drawing.Graph("Dynamic Huffman Tree");
+                viewer.Graph = graph;
+                viewer.Update();
+                dataGridView1.Update();
+            }
+            else
+            {
+                Dtable.Rows.Clear();
+                createDynamicGraph(EncodeNodeList[256]);
+                viewer.Graph = graph;
+                dataGridView1.Sort(dataGridView1.Columns[3], ListSortDirection.Ascending);
+                dataGridView1.Update();
+                viewer.Update();
+            }
         }
     }
 }

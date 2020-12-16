@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WindowsFormsApp1
 {
@@ -24,7 +20,7 @@ namespace WindowsFormsApp1
             this.freq = freq;
             this.ch = ch;
         }
-        public HuffmanNode(int freq, char ch, int depth) :  this(freq, ch)
+        public HuffmanNode(int freq, char ch, int depth) : this(freq, ch)
         {
             this.depth = depth;
 
@@ -42,7 +38,8 @@ namespace WindowsFormsApp1
         }
         public HuffmanNode(HuffmanNode leftChild, HuffmanNode rightChild, int depth)
         {
-            if (leftChild.parentNode != null) { 
+            if (leftChild.parentNode != null)
+            {
                 this.parentNode = leftChild.parentNode;
                 this.parentNode.leftChild = this;
             }
@@ -66,7 +63,7 @@ namespace WindowsFormsApp1
             this.isLeaf = false;
             this.freq = 0;
         }
-        
+
         public int Depth
         {
             get
@@ -129,14 +126,18 @@ namespace WindowsFormsApp1
             this.parentNode = null;
         }
 
-        public static void swap(HuffmanNode node1,HuffmanNode node2)
+        public static void swap(HuffmanNode node1, HuffmanNode node2)
         {
             //Console.WriteLine("TriedToSwap");
             HuffmanNode leftParent = node1.parentNode;
             HuffmanNode rightParent = node2.parentNode;
-            if(leftParent == rightParent)
+            if(leftParent == node2 || rightParent == node1)
             {
-                if(leftParent.leftChild == node1)
+                return;
+            }
+            if (leftParent == rightParent)
+            {
+                if (leftParent.leftChild == node1)
                 {
                     leftParent.leftChild = node2;
                     leftParent.rightChild = node1;
@@ -152,25 +153,25 @@ namespace WindowsFormsApp1
             int temp = node1.depth;
             node1.depth = node2.depth;
             node2.depth = temp;
-            if(leftParent == null)
+            if (leftParent == null)
             {
                 node2.unAssignParent();
             }
             else if (leftParent.leftChild == node1)
                 leftParent.leftChild = node2;
-            else if(leftParent.rightChild == node1)
+            else if (leftParent.rightChild == node1)
                 leftParent.rightChild = node2;
 
-            if(leftParent != null)
+            if (leftParent != null)
                 node2.parentNode = leftParent;
 
-            if(rightParent == null)
+            if (rightParent == null)
             {
                 node1.unAssignParent();
             }
             else if (rightParent.leftChild == node2)
                 rightParent.leftChild = node1;
-            else if(rightParent.rightChild == node2)
+            else if (rightParent.rightChild == node2)
                 rightParent.rightChild = node1;
 
             node1.parentNode = rightParent;
@@ -182,7 +183,7 @@ namespace WindowsFormsApp1
         }
         public override string ToString()
         {
-            return isLeaf ? ch.ToString() : freq.ToString();   
+            return isLeaf ? ch.ToString() : freq.ToString();
         }
     }
 }

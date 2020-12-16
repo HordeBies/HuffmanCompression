@@ -41,6 +41,9 @@ namespace WindowsFormsApp1
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.checkBox3 = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -86,7 +89,7 @@ namespace WindowsFormsApp1
             // label1
             // 
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.label1.Location = new System.Drawing.Point(865, 521);
+            this.label1.Location = new System.Drawing.Point(924, 521);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(102, 48);
             this.label1.TabIndex = 10;
@@ -128,7 +131,7 @@ namespace WindowsFormsApp1
             this.button2.TabIndex = 13;
             this.button2.Text = "Decode";
             this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.DecodeEncodedData);
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             this.button2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dynamicHuffman_KeyPress);
             // 
             // button3
@@ -140,6 +143,7 @@ namespace WindowsFormsApp1
             this.button3.Text = "Clear Tree";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.button3.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dynamicHuffman_KeyPress);
             // 
             // checkBox1
             // 
@@ -152,13 +156,51 @@ namespace WindowsFormsApp1
             this.checkBox1.TabIndex = 15;
             this.checkBox1.Text = "Clear input after updating";
             this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.Click += new System.EventHandler(this.checkBox1_Click);
             this.checkBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dynamicHuffman_KeyPress);
+            // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Location = new System.Drawing.Point(318, 545);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(144, 17);
+            this.checkBox2.TabIndex = 16;
+            this.checkBox2.Text = "Create Tree in Real Time";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            this.checkBox2.Click += new System.EventHandler(this.checkBox2_Click);
+            this.checkBox2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dynamicHuffman_KeyPress);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(634, 546);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(284, 26);
+            this.label2.TabIndex = 17;
+            this.label2.Text = "WARNING: in real time encoding if tree and table updated \r\nevery frame there may " +
+    "be lagging if data gets bigger";
+            // 
+            // checkBox3
+            // 
+            this.checkBox3.AutoSize = true;
+            this.checkBox3.Location = new System.Drawing.Point(468, 539);
+            this.checkBox3.Name = "checkBox3";
+            this.checkBox3.Size = new System.Drawing.Size(162, 30);
+            this.checkBox3.TabIndex = 18;
+            this.checkBox3.Text = "Don\'t visualize tree and table\r\n(for better performance)";
+            this.checkBox3.UseVisualStyleBackColor = true;
+            this.checkBox3.Click += new System.EventHandler(this.checkBox3_Click);
+            this.checkBox3.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dynamicHuffman_KeyPress);
             // 
             // DynamicHuffman
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1920, 1080);
+            this.Controls.Add(this.checkBox3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.checkBox2);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
@@ -192,5 +234,8 @@ namespace WindowsFormsApp1
         private System.Windows.Forms.Button button2;
         private Button button3;
         private CheckBox checkBox1;
+        private CheckBox checkBox2;
+        private Label label2;
+        private CheckBox checkBox3;
     }
 }

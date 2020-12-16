@@ -4,8 +4,6 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace WindowsFormsApp1
@@ -85,7 +83,8 @@ namespace WindowsFormsApp1
         private string getNodeName(HuffmanNode node)
         {
             string str;
-            if (node.IsLeaf) {
+            if (node.IsLeaf)
+            {
                 str = " '" + node.ToString() + "'(" + node.Frequency.ToString() + ")\n" + node.getBit();
             }
             else
@@ -96,7 +95,8 @@ namespace WindowsFormsApp1
         private void createStaticGraph(HuffmanNode node)
         {
             graph.AddNode(getNodeName(node));
-            if (node.IsLeaf) {
+            if (node.IsLeaf)
+            {
                 graph.FindNode(getNodeName(node)).Attr.Color = new Microsoft.Msagl.Drawing.Color(255, 0, 0);
                 DataRow row = Dtable.NewRow();
                 row[0] = "'" + node.Char.ToString() + "'";
@@ -131,7 +131,7 @@ namespace WindowsFormsApp1
 
         private string Decode()
         {
-            if (topNode == null || encodedText.Length <1)
+            if (topNode == null || encodedText.Length < 1)
                 return "";
             HuffmanNode currKey;
 
@@ -187,8 +187,8 @@ namespace WindowsFormsApp1
             topNode = list[0];
             createStaticGraph(topNode);
             encodedText = Encode();
-            double compressionRatio = 100.0- Math.Floor((double)encodedText.Length/ (double)(topNode.Frequency * 8)*100*100)/100;
-            this.label1.Text = "Compression Ratio: "+compressionRatio.ToString()+"%";
+            double compressionRatio = 100.0 - Math.Floor((double)encodedText.Length / (double)(topNode.Frequency * 8) * 100 * 100) / 100;
+            this.label1.Text = "Compression Ratio: " + compressionRatio.ToString() + "%";
             updateTextBox(encodedText);
             dataGridView1.Sort(dataGridView1.Columns[3], ListSortDirection.Ascending);
             UpdateGraph(graph);
@@ -222,6 +222,7 @@ namespace WindowsFormsApp1
             if (e.KeyCode == Keys.Escape)
             {
                 this.Hide();
+                Program.mainMEnu.BringToFront();
             }
         }
 
@@ -229,7 +230,7 @@ namespace WindowsFormsApp1
         {
             if (topNode == null || encodedText.Length < 1)
             {
-                MessageBox.Show("Can't decode empty input or not encoded text", "Decoding Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Can't decode empty input or not encoded data", "Decoding Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             textBox2.Text = Decode();
