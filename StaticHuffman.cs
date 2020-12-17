@@ -76,11 +76,11 @@ namespace WindowsFormsApp1
             textBox1.Height = ((this.Height - 36) / 2) - 25;
             textBox1.Width = ((this.Width - 36) / 2) - this.Width / 20;
 
-            label1.Location = new Point(dataGridView1.Location.X+6, button1.Location.Y);
-
             dataGridView1.Location = new Point(18 + textBox1.Width, textBox1.Location.Y);
             dataGridView1.Height = textBox1.Height;
             dataGridView1.Width = this.Width / 10;
+
+            label1.Location = new Point(dataGridView1.Location.X + 6, button1.Location.Y);
 
             textBox2.Location = new Point(6 + dataGridView1.Location.X + dataGridView1.Width, dataGridView1.Location.Y);
             textBox2.Height = textBox1.Height;
