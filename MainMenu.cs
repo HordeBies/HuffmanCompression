@@ -18,6 +18,15 @@ namespace WindowsFormsApp1
 
         private void button1_Click(object sender, EventArgs e)
         {
+            if (Program.dynamicHuffman.IsDisposed) { 
+                MessageBox.Show("This Form forcefully terminated.\nIn order to prevent corruption, application needs to be restarted", "Disposed Form Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            Program.staticHuffman.Size = new System.Drawing.Size(Screen.FromControl(this).Bounds.Width, Screen.FromControl(this).Bounds.Height);
+            Program.staticHuffman.Location = new System.Drawing.Point(Screen.FromControl(this).Bounds.X, Screen.FromControl(this).Bounds.Y);
+            Program.staticHuffman.ResizeGUI();
+
             if (checkBox1.Checked)
                 Program.staticHuffman.cleanInit();
             Program.staticHuffman.Show();
@@ -25,9 +34,27 @@ namespace WindowsFormsApp1
 
         private void button2_Click(object sender, EventArgs e)
         {
+            if (Program.dynamicHuffman.IsDisposed) { 
+                MessageBox.Show("This Form forcefully terminated.\nIn order to prevent corruption, application needs to be restarted", "Disposed Form Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            Program.dynamicHuffman.Size = new System.Drawing.Size(Screen.FromControl(this).Bounds.Width, Screen.FromControl(this).Bounds.Height);
+            Program.dynamicHuffman.Location = new System.Drawing.Point(Screen.FromControl(this).Bounds.X, Screen.FromControl(this).Bounds.Y);
+            Program.dynamicHuffman.ResizeGUI();
+
             if (checkBox2.Checked)
                 Program.dynamicHuffman.cleanInit();
+
+            Program.dynamicHuffman.ALT_F4 = false;
             Program.dynamicHuffman.Show();
+        }
+
+        private void MainMenu_Move(object sender, EventArgs e)
+        {
+            
+            label2.Text = Screen.FromControl(this).Bounds.Width+"\n" + Screen.FromControl(this).Bounds.Height+"\n"+this.Location.X;
+
         }
     }
 }

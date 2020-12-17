@@ -62,11 +62,44 @@ namespace WindowsFormsApp1
                 col.SortMode = DataGridViewColumnSortMode.NotSortable;
                 col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             }
+            dataGridView1.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
 
             EncodeNodeList.Add(nodeZero.Depth, nodeZero);
         }
 
+        public void ResizeGUI()
+        {
+            textBox3.Width = (this.Width - 30) / 2;
+            textBox3.Height = ((this.Height-36)/2) -25;
+
+            button1.Location =new Point(12, 18+textBox3.Height);
+            button3.Location = new Point(18 + button1.Width, button1.Location.Y);
+
+            textBox1.Location = new Point(12, button1.Location.Y + button1.Height + 6);
+            textBox1.Height = ((this.Height - 36) / 2) - 25;
+            textBox1.Width = ((this.Width - 36) / 2) - this.Width / 20;
+
+            checkBox1.Location = new Point(6 + button3.Location.X + button3.Width, 24 + textBox3.Height);
+            checkBox2.Location = new Point(6 + button3.Location.X + button3.Width, textBox1.Location.Y - checkBox2.Height -12);
+            checkBox3.Location = new Point(6 + checkBox2.Location.X + checkBox2.Width, 15+textBox3.Height);
+            label2.Location = new Point(6 + checkBox2.Location.X + checkBox2.Width, textBox1.Location.Y - label2.Height - 3);
+            label1.Location = new Point(6 + label2.Location.X + label2.Width, button1.Location.Y);
+            
+            dataGridView1.Location = new Point(18 + textBox1.Width, textBox1.Location.Y);
+            dataGridView1.Height = textBox1.Height;
+            dataGridView1.Width = this.Width / 10;
+
+            textBox2.Location = new Point(6+dataGridView1.Location.X + dataGridView1.Width, dataGridView1.Location.Y);
+            textBox2.Height = textBox1.Height;
+            textBox2.Width = textBox1.Width;
+
+            button2.Location = new Point((6 + label1.Location.X + label1.Width < textBox2.Location.X ? textBox2.Location.X + 6 : 6 + label1.Location.X + label1.Width), label1.Location.Y);
+
+            viewer.Location = new Point(textBox3.Width + 18, 12);
+            viewer.Size = textBox3.Size;
+           
+        }
         public void cleanInit()
         {
             graph = new Microsoft.Msagl.Drawing.Graph("Huffman Tree");
@@ -162,8 +195,12 @@ namespace WindowsFormsApp1
             }
         }
 
+        public bool ALT_F4 = false;
         private void dynamicHuffman_KeyPress(object sender, KeyEventArgs e)
         {
+            if (e.KeyCode.Equals(Keys.F4) && e.Alt == true)
+                ALT_F4 = true;
+
             if (e.KeyCode == Keys.Escape)
             {
                 this.Hide();
@@ -391,6 +428,16 @@ namespace WindowsFormsApp1
                 dataGridView1.Sort(dataGridView1.Columns[3], ListSortDirection.Ascending);
                 dataGridView1.Update();
                 viewer.Update();
+            }
+        }
+
+        private void DynamicHuffman_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (ALT_F4)
+            {
+                e.Cancel = true;
+                this.Hide();
+                return;
             }
         }
     }

@@ -146,6 +146,7 @@ namespace WindowsFormsApp1
             this.MaximizeBox = false;
             this.Name = "StaticHuffman";
             this.Text = "Form1";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.StaticHuffman_FormClosing);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.staticHuffman_KeyPress);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);

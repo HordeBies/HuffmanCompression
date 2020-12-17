@@ -49,10 +49,10 @@ namespace WindowsFormsApp1
             // 
             // button1
             // 
-            this.button1.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.button1.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.button1.Location = new System.Drawing.Point(12, 521);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(184, 48);
+            this.button1.Size = new System.Drawing.Size(180, 50);
             this.button1.TabIndex = 2;
             this.button1.Text = "Update Tree and Encode with Dynamic Huffman";
             this.button1.UseVisualStyleBackColor = true;
@@ -61,9 +61,6 @@ namespace WindowsFormsApp1
             // 
             // textBox3
             // 
-            this.textBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox3.Location = new System.Drawing.Point(12, 12);
             this.textBox3.Multiline = true;
             this.textBox3.Name = "textBox3";
@@ -88,7 +85,7 @@ namespace WindowsFormsApp1
             // 
             // label1
             // 
-            this.label1.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label1.Location = new System.Drawing.Point(924, 521);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(102, 48);
@@ -125,6 +122,7 @@ namespace WindowsFormsApp1
             // 
             // button2
             // 
+            this.button2.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.button2.Location = new System.Drawing.Point(1058, 521);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(136, 48);
@@ -136,9 +134,10 @@ namespace WindowsFormsApp1
             // 
             // button3
             // 
+            this.button3.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.button3.Location = new System.Drawing.Point(202, 521);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(110, 48);
+            this.button3.Size = new System.Drawing.Size(100, 50);
             this.button3.TabIndex = 14;
             this.button3.Text = "Clear Tree";
             this.button3.UseVisualStyleBackColor = true;
@@ -147,6 +146,7 @@ namespace WindowsFormsApp1
             // 
             // checkBox1
             // 
+            this.checkBox1.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.checkBox1.AutoSize = true;
             this.checkBox1.Checked = true;
             this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -161,6 +161,7 @@ namespace WindowsFormsApp1
             // 
             // checkBox2
             // 
+            this.checkBox2.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.checkBox2.AutoSize = true;
             this.checkBox2.Location = new System.Drawing.Point(318, 545);
             this.checkBox2.Name = "checkBox2";
@@ -173,6 +174,7 @@ namespace WindowsFormsApp1
             // 
             // label2
             // 
+            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(634, 546);
             this.label2.Name = "label2";
@@ -183,6 +185,7 @@ namespace WindowsFormsApp1
             // 
             // checkBox3
             // 
+            this.checkBox3.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.checkBox3.AutoSize = true;
             this.checkBox3.Location = new System.Drawing.Point(468, 539);
             this.checkBox3.Name = "checkBox3";
@@ -215,6 +218,7 @@ namespace WindowsFormsApp1
             this.MaximizeBox = false;
             this.Name = "DynamicHuffman";
             this.Text = "Form1";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DynamicHuffman_FormClosing);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dynamicHuffman_KeyPress);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
