@@ -49,12 +49,5 @@ namespace WindowsFormsApp1
             Program.dynamicHuffman.ALT_F4 = false;
             Program.dynamicHuffman.Show();
         }
-
-        private void MainMenu_Move(object sender, EventArgs e)
-        {
-            
-            label2.Text = Screen.FromControl(this).Bounds.Width+"\n" + Screen.FromControl(this).Bounds.Height+"\n"+this.Location.X;
-
-        }
     }
 }
