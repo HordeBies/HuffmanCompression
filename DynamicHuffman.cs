@@ -283,7 +283,7 @@ namespace WindowsFormsApp1
             }
 
             textBox1.Text = encodedText;
-            double compressionRatio = 100.0 - Math.Floor((double)encodedText.Length / (double)(EncodeNodeList[256].Frequency * 8) * 100 * 100) / 100;
+            double compressionRatio = 100.0 - Math.Floor(((double)encodedText.Length) / (double)(EncodeNodeList[256].Frequency * 8) * 100 * 100) / 100;
             this.label1.Text = "Compression Ratio: " + compressionRatio.ToString() + "%";
             
 
@@ -330,10 +330,11 @@ namespace WindowsFormsApp1
         private void Swap(HuffmanNode node1, HuffmanNode node2, int i, int j , SortedDictionary<int, HuffmanNode> nodeList) //parent(will traverse), givenNode
         {
             //Console.WriteLine("Swapped\n"+getNodeName(node1)+"\nwith\n"+getNodeName(node2)+"\n");
-            HuffmanNode.swap(node1, node2);
+            if(HuffmanNode.swap(node1, node2)) { 
             HuffmanNode temp = nodeList[i];
             nodeList[i] = nodeList[j];
             nodeList[j] = temp;
+            }
         }
         private void updateGraph(SortedDictionary<int,HuffmanNode> nodeList)
         {

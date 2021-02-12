@@ -126,14 +126,14 @@ namespace WindowsFormsApp1
             this.parentNode = null;
         }
 
-        public static void swap(HuffmanNode node1, HuffmanNode node2)
+        public static bool swap(HuffmanNode node1, HuffmanNode node2)
         {
             //Console.WriteLine("TriedToSwap");
             HuffmanNode leftParent = node1.parentNode;
             HuffmanNode rightParent = node2.parentNode;
             if(leftParent == node2 || rightParent == node1)
             {
-                return;
+                return false;
             }
             if (leftParent == rightParent)
             {
@@ -147,7 +147,7 @@ namespace WindowsFormsApp1
                     leftParent.leftChild = node1;
                     leftParent.rightChild = node2;
                 }
-                return;
+                return true;
             }
 
             int temp = node1.depth;
@@ -175,7 +175,7 @@ namespace WindowsFormsApp1
                 rightParent.rightChild = node1;
 
             node1.parentNode = rightParent;
-
+            return true;
         }
         public string getBit()
         {
